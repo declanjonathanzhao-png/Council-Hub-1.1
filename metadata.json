@@ -1,0 +1,8 @@
+{
+  "name": "CouncilHub 3.0",
+  "description": "Student council and academic management system with Google Drive files and Google Calendar integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

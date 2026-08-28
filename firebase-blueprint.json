@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "Document": {
+      "title": "Council Document",
+      "description": "Council documents, proposals, MoMs, and reports uploaded by users.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 256 },
+        "filename": { "type": "string", "maxLength": 256 },
+        "format": { "type": "string", "maxLength": 32 },
+        "departmentId": { "type": "string", "maxLength": 64 },
+        "departmentName": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "maxLength": 64 },
+        "status": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "filename", "departmentId"]
+    },
+    "Task": {
+      "title": "Council Task",
+      "description": "Council tasks and approvals assigned across departments.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 256 },
+        "status": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "title"]
+    },
+    "Event": {
+      "title": "Council Event",
+      "description": "Calendar events and meetings.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 256 },
+        "date": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "title"]
+    },
+    "Department": {
+      "title": "Council Department",
+      "description": "Council departments and folder structures.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 256 },
+        "slug": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id", "name"]
+    },
+    "AdminUser": {
+      "title": "Admin User",
+      "description": "Council administrator profile and RBAC permissions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "name": { "type": "string", "maxLength": 256 },
+        "role": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "email", "name", "role"]
+    },
+    "SystemSetting": {
+      "title": "System Setting",
+      "description": "Global security and access control settings.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Security audit records.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "action": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id", "action"]
+    }
+  },
+  "firestore": {
+    "/documents/{documentId}": {
+      "schema": "Document",
+      "description": "Shared council documents collection."
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Shared council tasks collection."
+    },
+    "/events/{eventId}": {
+      "schema": "Event",
+      "description": "Shared council calendar events collection."
+    },
+    "/departments/{departmentId}": {
+      "schema": "Department",
+      "description": "Shared council departments collection."
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminUser",
+      "description": "Shared council admin users and permissions collection."
+    },
+    "/system_settings/{settingId}": {
+      "schema": "SystemSetting",
+      "description": "Shared system settings collection."
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Shared system audit logs collection."
+    }
+  }
+}
