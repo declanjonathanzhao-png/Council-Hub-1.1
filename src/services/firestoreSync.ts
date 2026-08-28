@@ -347,9 +347,11 @@ export function subscribeToEvents(
 // -------------------------------------------------------------
 export function mergeDepartments(baseDepts: Department[], remoteDepts: Department[]): Department[] {
   const deptMap = new Map<string, Department>();
+  const baseMap = new Map<string, Department>();
 
   // 1. Seed with base departments (ensures all 7 core departments are always present with logos)
   baseDepts.forEach((d) => {
+    baseMap.set(d.id, d);
     deptMap.set(d.id, {
       ...d,
       folders: [...(d.folders || [])],
@@ -361,17 +363,19 @@ export function mergeDepartments(baseDepts: Department[], remoteDepts: Departmen
     remoteDepts.forEach((r) => {
       if (!r || !r.id) return;
       const existing = deptMap.get(r.id);
+      const baseItem = baseMap.get(r.id);
       if (existing) {
         deptMap.set(r.id, {
           ...existing,
           ...r,
-          // Preserve local badge image asset if remote doesn't have it or if it's base
-          badgeImage: r.badgeImage || existing.badgeImage,
+          // Always use base badgeImage for core departments if present, otherwise fallback
+          badgeImage: baseItem?.badgeImage || r.badgeImage || existing.badgeImage,
           folders: Array.isArray(r.folders) ? r.folders : existing.folders,
         });
       } else {
         deptMap.set(r.id, {
           ...r,
+          badgeImage: baseItem?.badgeImage || r.badgeImage,
           folders: Array.isArray(r.folders) ? r.folders : [],
         });
       }

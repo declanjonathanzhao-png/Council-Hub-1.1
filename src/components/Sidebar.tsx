@@ -175,12 +175,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     {dept.badgeImage ? (
-                      <img
-                        src={dept.badgeImage}
-                        alt={dept.name}
-                        className="w-5 h-5 rounded-full object-cover shrink-0 border border-[#D4AF37]"
-                        referrerPolicy="no-referrer"
-                      />
+                      <>
+                        <img
+                          src={dept.badgeImage}
+                          alt={dept.name}
+                          className="w-5 h-5 rounded-full object-cover shrink-0 border border-[#D4AF37]"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const next = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (next) next.style.display = 'inline-flex';
+                          }}
+                        />
+                        <span className="material-symbols-outlined text-[18px] text-[#D4AF37] shrink-0 hidden">
+                          {dept.iconName}
+                        </span>
+                      </>
                     ) : (
                       <span className="material-symbols-outlined text-[18px] text-[#D4AF37] shrink-0">
                         {dept.iconName}

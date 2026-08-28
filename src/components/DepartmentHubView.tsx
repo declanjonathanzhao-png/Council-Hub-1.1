@@ -118,12 +118,24 @@ export const DepartmentHubView: React.FC<DepartmentHubViewProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             {department.badgeImage ? (
-              <img
-                src={department.badgeImage}
-                alt={department.name}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover shrink-0 border-2 border-[#D4AF37] shadow-md"
-                referrerPolicy="no-referrer"
-              />
+              <>
+                <img
+                  src={department.badgeImage}
+                  alt={department.name}
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover shrink-0 border-2 border-[#D4AF37] shadow-md"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const next = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (next) next.style.display = 'flex';
+                  }}
+                />
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-[#006054]/10 items-center justify-center text-[#006054] shrink-0 border border-[#006054]/20 hidden">
+                  <span className="material-symbols-outlined text-[32px] md:text-[36px] fill-icon">
+                    {department.iconName}
+                  </span>
+                </div>
+              </>
             ) : (
               <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-[#006054]/10 flex items-center justify-center text-[#006054] shrink-0 border border-[#006054]/20">
                 <span className="material-symbols-outlined text-[32px] md:text-[36px] fill-icon">
@@ -557,3 +569,4 @@ export const DepartmentHubView: React.FC<DepartmentHubViewProps> = ({
     </div>
   );
 };
+
