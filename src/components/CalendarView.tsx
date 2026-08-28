@@ -360,11 +360,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     className="w-full p-2.5 bg-[#f6f3ec] border border-[#bec9c5]/60 rounded-xl text-[#1c1c18] outline-none"
                   >
                     <option value="Executive Committee">Executive Committee</option>
-                    <option value="Academic Affairs">Academic Affairs</option>
-                    <option value="Student Welfare">Student Welfare</option>
-                    <option value="Finance & Budget">Finance & Budget</option>
-                    <option value="Events & Culture">Events & Culture</option>
-                    <option value="Public Relations">Public Relations</option>
+                    <option value="House Department">House Department</option>
+                    <option value="Prefectorial Board">Prefectorial Board</option>
+                    <option value="Student Welfare Board">Student Welfare Board</option>
+                    <option value="Values in Action Board">Values in Action Board</option>
+                    <option value="Media and Communication Department">Media and Communication Department</option>
+                    <option value="Student Tech Leaders">Student Tech Leaders</option>
                   </select>
                 </div>
                 <div>

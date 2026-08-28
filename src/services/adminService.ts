@@ -9,16 +9,16 @@ import {
 } from '../types';
 
 const STORAGE_KEY_SUPER_ADMIN_EMAIL = 'council_super_admin_email_v1';
-const DEFAULT_SUPER_ADMIN_EMAIL = 'admin@studentcouncil.edu';
+const DEFAULT_SUPER_ADMIN_EMAIL = 'kenzaltacc@gmail.com';
 
 export const getSuperAdminEmail = (): string => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY_SUPER_ADMIN_EMAIL);
     if (saved && saved.trim()) {
       const cleanSaved = saved.trim().toLowerCase();
-      // Auto-migrate away from old personal defaults if present
+      // Auto-migrate away from old personal defaults or studentcouncil default if present
       if (
-        cleanSaved === 'kenzaltacc@gmail.com' ||
+        cleanSaved === 'admin@studentcouncil.edu' ||
         cleanSaved.includes('binabangsa') ||
         cleanSaved.includes('declan')
       ) {
@@ -151,13 +151,15 @@ const DEFAULT_ACCESS_CONTROL: AccessControlSettings = {
     'sarah.lee@studentcouncil.edu',
     'marcus.vance@studentcouncil.edu',
     'elena.rostova@studentcouncil.edu',
+    'kenzaltacc@gmail.com',
   ],
-  allowedDomains: ['@studentcouncil.edu'],
+  allowedDomains: ['@studentcouncil.edu', '@gmail.com'],
   blockedEmails: [],
   whitelistPasswords: {
     'sarah.lee@studentcouncil.edu': 'council2026',
     'marcus.vance@studentcouncil.edu': 'council2026',
     'elena.rostova@studentcouncil.edu': 'council2026',
+    'kenzaltacc@gmail.com': 'council2026',
   },
 };
 
@@ -618,20 +620,6 @@ const getInitialAdmins = (): AdminUser[] => [
     addedAt: new Date().toISOString(),
     addedBy: 'System Core',
   },
-  {
-    id: 'admin-exec-1',
-    email: 'sarah.lee@studentcouncil.edu',
-    name: 'Sarah Lee',
-    role: 'admin',
-    title: 'Council President',
-    departmentScope: 'all',
-    canDeleteFiles: true,
-    canDeleteFolders: true,
-    canManageDepartments: true,
-    canApproveDocs: true,
-    addedAt: new Date().toISOString(),
-    addedBy: getSuperAdminEmail(),
-  },
 ];
 
 const INITIAL_AUDIT_LOGS: AdminAuditLog[] = [
@@ -659,14 +647,40 @@ export function getAdmins(): AdminUser[] {
     const saved = localStorage.getItem(STORAGE_KEY_ADMINS);
     if (saved) {
       let parsed: AdminUser[] = JSON.parse(saved);
+      // Remove Sarah Lee if present
+      parsed = parsed.filter(
+        (a) => a.email.toLowerCase() !== 'sarah.lee@studentcouncil.edu' && a.id !== 'admin-exec-1'
+      );
       // Migrate / ensure primary super admin is present
       const hasPrimary = parsed.some(
         (a) => a.email.toLowerCase() === superEmail.toLowerCase()
       );
       if (!hasPrimary) {
         parsed = [getInitialAdmins()[0], ...parsed.filter((a) => !isSuperAdminEmail(a.email))];
-        localStorage.setItem(STORAGE_KEY_ADMINS, JSON.stringify(parsed));
       }
+
+      // Deduplicate by email and id
+      const seenEmails = new Set<string>();
+      const seenIds = new Set<string>();
+      let uniqueParsed: AdminUser[] = [];
+      for (const a of parsed) {
+        const emailLower = a.email.toLowerCase();
+        if (seenEmails.has(emailLower) || seenIds.has(a.id)) {
+          continue;
+        }
+        seenEmails.add(emailLower);
+        seenIds.add(a.id);
+        uniqueParsed.push(a);
+      }
+      parsed = uniqueParsed;
+
+      // Ensure all admins have delete permissions enabled by default if not explicitly false
+      parsed = parsed.map((a) => ({
+        ...a,
+        canDeleteFiles: a.canDeleteFiles !== false,
+        canDeleteFolders: a.canDeleteFolders !== false,
+      }));
+      localStorage.setItem(STORAGE_KEY_ADMINS, JSON.stringify(parsed));
       return parsed;
     }
   } catch (e) {
@@ -699,11 +713,23 @@ export function saveAdmins(admins: AdminUser[]): void {
     const hasSuper = sanitized.some(
       (a) => a.email.toLowerCase() === superEmail.toLowerCase()
     );
-    if (!hasSuper) {
-      sanitized.unshift(getInitialAdmins()[0]);
+    let finalAdmins = hasSuper ? sanitized : [getInitialAdmins()[0], ...sanitized];
+
+    // Deduplicate by email and id
+    const seenEmails = new Set<string>();
+    const seenIds = new Set<string>();
+    let uniqueAdmins: AdminUser[] = [];
+    for (const a of finalAdmins) {
+      const emailLower = a.email.toLowerCase();
+      if (seenEmails.has(emailLower) || seenIds.has(a.id)) {
+        continue;
+      }
+      seenEmails.add(emailLower);
+      seenIds.add(a.id);
+      uniqueAdmins.push(a);
     }
 
-    localStorage.setItem(STORAGE_KEY_ADMINS, JSON.stringify(sanitized));
+    localStorage.setItem(STORAGE_KEY_ADMINS, JSON.stringify(uniqueAdmins));
   } catch (e) {
     console.warn('Failed to save admins to storage:', e);
   }
