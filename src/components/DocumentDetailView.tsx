@@ -840,7 +840,7 @@ export const DocumentDetailView: React.FC<DocumentDetailViewProps> = ({
                   <span>Tag:</span>
                 </span>
                 {[
-                  { name: 'President', tag: '@Sarah Lee ' },
+                  { name: 'President', tag: '@President ' },
                   { name: 'Executive Head', tag: '@Executive Head ' },
                   { name: 'Dept Heads', tag: '@DeptHeads ' },
                   { name: 'All Council', tag: '@Council ' },
@@ -1190,3 +1190,4 @@ export const DocumentDetailView: React.FC<DocumentDetailViewProps> = ({
     </div>
   );
 };
+
