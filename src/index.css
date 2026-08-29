@@ -169,3 +169,22 @@
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Spacing between logo and 'CouncilHub' */
+  padding: 16px;
+}
+
+.sidebar-logo {
+  width: 32px;  /* Optimal size for detailed circular logos */
+  height: 32px;
+  object-fit: contain;
+  border-radius: 50%; /* Ensures perfect circular bounds */
+}
+
+.sidebar-title {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+}
